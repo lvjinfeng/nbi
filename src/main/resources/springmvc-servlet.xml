@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+        <!-- RuiboZhou (add AOP xsi:schemaLocation) -->
+	<!-- 扫描包被注解的组件生效 -->
+	<!-- 主要扫描SpringMVC 自带的标签  @RequestMapping("/XXXX") -->
+	<!-- XXX 扫描一下标签 :@Repository @Service @Controller的注解类，然后注册到工厂中。并且context:component-scan激活@ required。@ resource,@ autowired、@PostConstruct @PreDestroy   -->
+	<context:component-scan base-package="com.nbi">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>  
+	</context:component-scan>
+	
+	<!-- mvc的注解驱动 -->
+	<mvc:annotation-driven validator="validator">
+		<mvc:message-converters>
+			<!-- 文本MessageConverter  -->
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<constructor-arg index="0" value="UTF-8"/>
+			</bean>
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="objectMapper">
+					<bean class="com.github.miemiedev.mybatis.paginator.jackson2.PageListJsonMapper" />
+				</property>  
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	
+	<!-- 以下 validator  ConversionService 在使用 mvc:annotation-driven 会 自动注册-->  
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">  
+	    <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>  
+	    <!-- 如果不加默认到 使用classpath下的 ValidationMessages.properties -->  
+	    <property name="validationMessageSource" ref="messageSource"/>  
+	</bean>  
+	  
+	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!-- 前缀 -->
+		<property name="prefix" value="/WEB-INF/views/"/>
+		<!-- 后缀 -->
+		<property name="suffix" value=".jsp"/>
+	</bean>
+
+	<!-- 处理静态资源被“/”所拦截的问题 -->
+ 	<mvc:default-servlet-handler/>
+ 
+	<!--  	分页拦截器 -->
+    <mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/*" />
+			<bean class="com.github.miemiedev.mybatis.paginator.springmvc.PageListAttrHandlerInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors> 
+</beans>
