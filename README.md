@@ -1,2 +1,2 @@
 # nbi
-A written examination question
+这是一个关于session控制的小程序，主要是实现session的并发控制，我的设计思路是这样的：首先是在spring中设置controller是单例的，而不同用户的sesion是互不干扰的，主要的并发问题在于同一个用户多个进程同时修改了session，这道题目要求是对session的创建和销毁进行控制，那么只需要在每次操作session之前做一个副本，数据的修改放在副本中，把结果返回给用户，这样的结果就是正确的，然后判断session的存在，再考虑把结果写回session。
