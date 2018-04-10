@@ -13,6 +13,20 @@ public class DeliverySession {
 	private Date createTime;
 	private Date startTime;
 	
+	
+	public DeliverySession() {
+		super();
+	}
+	public DeliverySession(String deliverySessionId, String actionType, Date createTime, Date startTime, Date stopTime,
+			int actionCount) {
+		super();
+		this.deliverySessionId = deliverySessionId;
+		this.actionType = actionType;
+		this.createTime = createTime;
+		this.startTime = startTime;
+		this.stopTime = stopTime;
+		this.actionCount = actionCount;
+	}
 	public int getActionCount() {
 		return actionCount;
 	}
