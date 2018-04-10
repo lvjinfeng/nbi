@@ -27,6 +27,7 @@ public class SessionController extends BaseController{
 		HttpServletRequest request = getRequest();
 		HttpSession session = request.getSession();
 		DeliverySession deliverySession = null;
+		DeliverySession deliverySession2 = new DeliverySession();
 		SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
 		String info = null;
 		if (session.isNew()||session.getAttribute("deliverySession")==null) {
@@ -41,15 +42,17 @@ public class SessionController extends BaseController{
 			
 		}
 		else {
-			
 			deliverySession = (DeliverySession)session.getAttribute("deliverySession");
-			deliverySession.setStartTime(new Date());
-			deliverySession.setActionCount(deliverySession.getActionCount()+1);
+			deliverySession2.setActionType(deliverySession.getActionType());
+			deliverySession2.setCreateTime(deliverySession.getCreateTime());
+			deliverySession2.setDeliverySessionId(deliverySession.getDeliverySessionId());
+			deliverySession2.setStartTime(new Date());
+			deliverySession2.setActionCount(deliverySession.getActionCount()+1);
 			info = "sessionIsOld, ";
 		}
-		 info += "sessionId:"+deliverySession.getDeliverySessionId()+", sessionCreateTime:"+sdf.format(deliverySession.getCreateTime())
-		+", ActionType:"+deliverySession.getActionType()
-		+", sesionStartTime:"+sdf.format(deliverySession.getStartTime())+", total action count:"+deliverySession.getActionCount();
+		 info += "sessionId:"+deliverySession2.getDeliverySessionId()+", sessionCreateTime:"+sdf.format(deliverySession2.getCreateTime())
+		+", ActionType:"+deliverySession2.getActionType()
+		+", sesionStartTime:"+sdf.format(deliverySession2.getStartTime())+", total action count:"+deliverySession2.getActionCount();
 		logger.info(info);
 		
 		flushResponse(response,info);
@@ -61,16 +64,21 @@ public class SessionController extends BaseController{
 		HttpServletRequest request = getRequest();
 		HttpSession session = request.getSession(false);
 		DeliverySession deliverySession = null;
+		DeliverySession deliverySession2 = new DeliverySession();
 		SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH:mm:ss");	
 		String info = null;
 		if (session !=null) {
 			deliverySession = (DeliverySession)session.getAttribute("deliverySession");
-			deliverySession.setActionCount(deliverySession.getActionCount()+1);
+			deliverySession2.setActionType(deliverySession.getActionType());
+			deliverySession2.setCreateTime(deliverySession.getCreateTime());
+			deliverySession2.setDeliverySessionId(deliverySession.getDeliverySessionId());
+			deliverySession2.setStartTime(new Date());
+			deliverySession2.setActionCount(deliverySession.getActionCount()+1);
 			String sessionId = deliverySession.getDeliverySessionId();
 			session.invalidate();
 			Date date = new Date();
-			deliverySession.setStopTime(date);
-			info=sessionId+" has stopped, stopTime:"+sdf.format(date)+", total action count:"+deliverySession.getActionCount();
+			deliverySession2.setStopTime(date);
+			info=sessionId+" has stopped, stopTime:"+sdf.format(date)+", total action count:"+deliverySession2.getActionCount();
 		}
 		else {
 			info = "Your Session already stopped,please create a new one!";
