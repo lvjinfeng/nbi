@@ -43,12 +43,11 @@ public class SessionController extends BaseController{
 		}
 		else {
 			deliverySession = (DeliverySession)session.getAttribute("deliverySession");
-			deliverySession2.setActionType(deliverySession.getActionType());
-			deliverySession2.setCreateTime(deliverySession.getCreateTime());
-			deliverySession2.setDeliverySessionId(deliverySession.getDeliverySessionId());
-			deliverySession2.setStartTime(new Date());
-			deliverySession2.setActionCount(deliverySession.getActionCount()+1);
+			deliverySession2 = new DeliverySession(deliverySession.getDeliverySessionId(), deliverySession.getActionType(), deliverySession.getCreateTime(), new Date(), deliverySession.getStopTime(),
+					deliverySession.getActionCount()+1);
 			info = "sessionIsOld, ";
+			session.removeAttribute("deliverySession");
+			session.setAttribute("deliverySession", deliverySession2);
 		}
 		 info += "sessionId:"+deliverySession2.getDeliverySessionId()+", sessionCreateTime:"+sdf.format(deliverySession2.getCreateTime())
 		+", ActionType:"+deliverySession2.getActionType()
