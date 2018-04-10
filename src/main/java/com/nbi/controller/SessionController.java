@@ -27,7 +27,7 @@ public class SessionController extends BaseController{
 		HttpServletRequest request = getRequest();
 		HttpSession session = request.getSession();
 		DeliverySession deliverySession = null;
-		DeliverySession deliverySession2 = new DeliverySession();
+		DeliverySession deliverySession2 = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
 		String info = null;
 		if (session.isNew()||session.getAttribute("deliverySession")==null) {
@@ -39,6 +39,10 @@ public class SessionController extends BaseController{
 			deliverySession.setActionCount(1);
 			session.setAttribute("deliverySession", deliverySession);
 			info="sessionStartOk, ";
+			 info += "sessionId:"+deliverySession.getDeliverySessionId()+", sessionCreateTime:"+sdf.format(deliverySession.getCreateTime())
+				+", ActionType:"+deliverySession.getActionType()
+				+", sesionStartTime:"+sdf.format(deliverySession.getStartTime())+", total action count:"+deliverySession.getActionCount();
+				
 			
 		}
 		else {
@@ -48,10 +52,10 @@ public class SessionController extends BaseController{
 			info = "sessionIsOld, ";
 			session.removeAttribute("deliverySession");
 			session.setAttribute("deliverySession", deliverySession2);
+			info += "sessionId:"+deliverySession2.getDeliverySessionId()+", sessionCreateTime:"+sdf.format(deliverySession2.getCreateTime())
+			+", ActionType:"+deliverySession2.getActionType()
+			+", sesionStartTime:"+sdf.format(deliverySession2.getStartTime())+", total action count:"+deliverySession2.getActionCount();
 		}
-		 info += "sessionId:"+deliverySession2.getDeliverySessionId()+", sessionCreateTime:"+sdf.format(deliverySession2.getCreateTime())
-		+", ActionType:"+deliverySession2.getActionType()
-		+", sesionStartTime:"+sdf.format(deliverySession2.getStartTime())+", total action count:"+deliverySession2.getActionCount();
 		logger.info(info);
 		
 		flushResponse(response,info);
